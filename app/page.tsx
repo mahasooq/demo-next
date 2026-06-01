@@ -1,25 +1,15 @@
 import Link from "next/link";
+import { getApexOrigin, tenantLabel, tenantUrl } from "@/lib/app-domain";
 
-const tenants = [
-  {
-    href: "http://acme.localhost:3000/tenant",
-    label: "acme.localhost",
-    note: "tenant_acme",
-  },
-  {
-    href: "http://beta.localhost:3000/tenant",
-    label: "beta.localhost",
-    note: "tenant_beta",
-  },
-  {
-    href: "http://unknown.localhost:3000/tenant",
-    label: "unknown.localhost",
-    note: "404",
-    danger: true,
-  },
-];
+const tenantSlugs = [
+  { subdomain: "acme", note: "tenant_acme" },
+  { subdomain: "beta", note: "tenant_beta" },
+  { subdomain: "unknown", note: "404", danger: true },
+] as const;
 
 export default function Home() {
+  const apex = getApexOrigin();
+
   return (
     <div className="page">
       <header className="page-header">
@@ -39,21 +29,22 @@ export default function Home() {
             Unknown subdomains return 404.
           </p>
           <ul className="demo-list" style={{ marginTop: "1rem" }}>
-            {tenants.map((t) => (
-              <li key={t.href}>
+            {tenantSlugs.map((t) => (
+              <li key={t.subdomain}>
                 <a
-                  href={t.href}
-                  className={t.danger ? "is-danger" : undefined}
+                  href={tenantUrl(t.subdomain)}
+                  className={"danger" in t && t.danger ? "is-danger" : undefined}
                 >
-                  <span>{t.label}</span>
+                  <span>{tenantLabel(t.subdomain)}</span>
                   <span>{t.note}</span>
                 </a>
               </li>
             ))}
           </ul>
           <p className="hint" style={{ marginTop: "1rem" }}>
-            Also open <Link href="/tenant">/tenant</Link> on the apex host to see
-            the no-tenant state.
+            Also open <Link href="/tenant">/tenant</Link> on the apex host (
+            <a href={`${apex}/tenant`}>{apex}/tenant</a>) to see the no-tenant
+            state.
           </p>
         </section>
 

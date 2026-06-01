@@ -106,7 +106,10 @@ export default function GeofencePage() {
     const requestBody = JSON.stringify(payload, null, 2);
     const requestLog = [
       "POST /api/geofence HTTP/1.1",
-      "Host: " + (typeof window !== "undefined" ? window.location.host : "localhost"),
+      "Host: " +
+        (typeof window !== "undefined"
+          ? window.location.host
+          : process.env.NEXT_PUBLIC_APP_DOMAIN ?? "localhost:3000"),
       "Content-Type: application/json",
       "",
       requestBody,

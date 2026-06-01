@@ -25,7 +25,7 @@ Every request (except `_next/static`, `_next/image`, `favicon.ico`) passes throu
 **Flow:**
 
 1. Read the `Host` header (e.g. `acme.localhost:3000`).
-2. Parse it against `ROOT_DOMAIN` from `.env` (default `localhost:3000`; comparison uses the hostname only, `localhost`).
+2. Parse it against `DOMAIN` from `.env` (or legacy `ROOT_DOMAIN`; default `localhost:3000`; comparison uses the hostname only).
 3. Classify the host:
    - **Apex** — `localhost` or `www.localhost` → continue without tenant headers (main demo on port 3000).
    - **Tenant** — single label before `.localhost` (e.g. `acme` from `acme.localhost`) → look up tenant.
@@ -202,15 +202,19 @@ Set these variables in the Railway service:
 | Variable | Example |
 |----------|---------|
 | `DATABASE_URL` | Railway Postgres/PostGIS plugin connection string |
-| `ROOT_DOMAIN` | Your public host, e.g. `your-app.up.railway.app` (no `https://`) |
+| `DOMAIN` | Apex host, e.g. `demo-next.mahasooq.com` (no `https://`, no path) |
 | `NODE_ENV` | `production` (often set by Railway) |
 
-For tenant subdomains in production, point DNS wildcard `*.yourdomain.com` at Railway and set `ROOT_DOMAIN` accordingly.
+`ROOT_DOMAIN` is still supported as an alias for `DOMAIN`.
+
+UI links and middleware both read `DOMAIN`. Client code receives it via `NEXT_PUBLIC_APP_DOMAIN` (set from `DOMAIN` in `next.config.mjs`).
+
+For tenant subdomains in production, point DNS wildcard `*.demo-next.mahasooq.com` (or your apex) at Railway. Example: `https://acme.demo-next.mahasooq.com/tenant` — not the apex URL `https://demo-next.mahasooq.com/tenant` (that is the no-tenant state).
 
 ## Notes
 
 - **Custom server**: Socket.io shares the HTTP server with Next.js (`server.js`). This demo cannot deploy to Vercel as-is; use a long-running Node host (Railway, Render, Fly.io, VPS, etc.).
-- **`ROOT_DOMAIN`**: Defaults to `localhost:3000` locally. Subdomains are parsed against the hostname part only.
+- **`DOMAIN`**: Defaults to `localhost:3000` locally. Set to your production apex host on Railway. Subdomains are parsed against the hostname part only.
 - **PostGIS**: Must be running before calling `/api/geofence`.
 
 ## Project layout

@@ -1,10 +1,13 @@
 import { headers } from "next/headers";
 import Link from "next/link";
+import { getApexOrigin, getAppDomain, tenantUrl } from "@/lib/app-domain";
 
 export default function TenantPage() {
   const headerList = headers();
   const tenantId = headerList.get("x-tenant-id");
   const tenantName = headerList.get("x-tenant-name");
+  const apex = getApexOrigin();
+  const domain = getAppDomain();
 
   return (
     <div className="page">
@@ -12,18 +15,17 @@ export default function TenantPage() {
         <h1>Tenant middleware</h1>
         <p>
           Server component reads injected headers set by middleware after mock
-          Redis lookup.
+          Redis lookup. Apex domain: <code>{domain}</code>
         </p>
       </header>
 
       {!tenantId ? (
         <section className="card">
           <div className="empty-state">
-            No tenant on this host. Try a seeded subdomain, e.g.{" "}
-            <a href="http://acme.localhost:3000/tenant">
-              acme.localhost:3000/tenant
-            </a>
-            , or return <Link href="/">home</Link>.
+            No tenant on this host (apex). Try a tenant subdomain, e.g.{" "}
+            <a href={tenantUrl("acme")}>{tenantUrl("acme")}</a>, or return{" "}
+            <Link href="/">home</Link> or{" "}
+            <a href={`${apex}/tenant`}>{apex}/tenant</a>.
           </div>
         </section>
       ) : (

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAppDomain } from "@/lib/app-domain";
 import { basicAuthUnauthorized, isBasicAuthValid } from "@/lib/basic-auth";
 import { parseHost } from "@/lib/subdomain";
 import { getTenantBySubdomain } from "@/lib/tenant-store";
 
-const ROOT_DOMAIN = process.env.ROOT_DOMAIN ?? "localhost:3000";
+const ROOT_DOMAIN = getAppDomain();
 
 export async function middleware(request: NextRequest) {
   if (!isBasicAuthValid(request)) {
