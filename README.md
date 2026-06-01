@@ -188,10 +188,29 @@ Or use the UI at [http://localhost:3000/geofence](http://localhost:3000/geofence
 | `npm run build` | Production build |
 | `npm run start` | Custom server + Next.js production |
 
+## Deploying on Railway
+
+The custom server in `server.js` is configured for Railway:
+
+- **Host:** `0.0.0.0` (default via `HOSTNAME`, listens on all interfaces)
+- **Port:** `process.env.PORT` (injected by Railway; defaults to `3000` locally)
+
+**Start command:** `npm run start` (runs `NODE_ENV=production node server.js`)
+
+Set these variables in the Railway service:
+
+| Variable | Example |
+|----------|---------|
+| `DATABASE_URL` | Railway Postgres/PostGIS plugin connection string |
+| `ROOT_DOMAIN` | Your public host, e.g. `your-app.up.railway.app` (no `https://`) |
+| `NODE_ENV` | `production` (often set by Railway) |
+
+For tenant subdomains in production, point DNS wildcard `*.yourdomain.com` at Railway and set `ROOT_DOMAIN` accordingly.
+
 ## Notes
 
 - **Custom server**: Socket.io shares the HTTP server with Next.js (`server.js`). This demo cannot deploy to Vercel as-is; use a long-running Node host (Railway, Render, Fly.io, VPS, etc.).
-- **`ROOT_DOMAIN`**: Defaults to `localhost:3000`. Subdomains are parsed against the hostname part (`localhost`).
+- **`ROOT_DOMAIN`**: Defaults to `localhost:3000` locally. Subdomains are parsed against the hostname part only.
 - **PostGIS**: Must be running before calling `/api/geofence`.
 
 ## Project layout

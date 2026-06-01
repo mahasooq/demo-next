@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const { isBasicAuthValid } = require("./lib/basic-auth-shared");
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = process.env.HOSTNAME ?? "localhost";
+const hostname = process.env.HOSTNAME ?? "0.0.0.0";
 const port = parseInt(process.env.PORT ?? "3000", 10);
 
 const app = next({ dev, hostname, port });
