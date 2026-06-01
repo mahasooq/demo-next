@@ -3,22 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "node server.js",
+    "build": "prisma generate && next build",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "leaflet": "^1.9.4",
+    "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "eslint-config-next": "14.2.35",
+    "prisma": "^6.19.3",
+    "typescript": "^5"
   }
 }
